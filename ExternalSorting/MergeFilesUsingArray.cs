@@ -22,11 +22,7 @@ namespace ExternalSorting
             // Create list of initial mins from each stream.
             foreach (var reader in readers)
             {
-                int currentNo;
-                bool isFound = Helper.ReadInt(reader, out currentNo);
-
-                if (isFound)
-                    currentMins.Add(new ReaderAndNum(currentNo, reader));
+                AddCurrentToArray(reader, currentMins);
             }
 
             //write min of all mins to file and get next min from that stream
@@ -42,14 +38,17 @@ namespace ExternalSorting
                 writer.WriteLine(min.num);
                 currentMins.Remove(min);
 
-                if (Helper.ReadInt(min.reader, out int currentNo))
-                    currentMins.Add(new ReaderAndNum(currentNo, min.reader));
+                AddCurrentToArray(min.reader, currentMins);
 
                 if (!currentMins.Any())
                     break;
             }
+        }
 
-            
+        public static void AddCurrentToArray(StreamReader reader, List<ReaderAndNum> array)
+        {
+            if (Helper.ReadInt(reader, out int currentNo))
+                array.Add(new ReaderAndNum(currentNo, reader));
         }
 
     }

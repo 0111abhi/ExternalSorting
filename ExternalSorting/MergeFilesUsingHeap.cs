@@ -12,10 +12,7 @@ namespace ExternalSorting
             Heap heap = new Heap(readers.Count);
             foreach(var reader in readers)
             {
-                int currentNo;
-                bool isFound = Helper.ReadInt(reader, out currentNo);
-                if (isFound)
-                    heap.Add(new ReaderAndNum(currentNo, reader));
+                AddCurrentToHeap(reader, heap);
             }
 
             while(!heap.IsEmpty())
@@ -24,13 +21,16 @@ namespace ExternalSorting
                 if (heap.GetMin(out min))
                 {
                     writer.WriteLine(min.num);
-                    int currentNo;
-                    bool isFound = Helper.ReadInt(min.reader, out currentNo);
-                    if (isFound)
-                        heap.Add(new ReaderAndNum(currentNo, min.reader));
+                    AddCurrentToHeap(min.reader, heap);
 
                 }
             }
+        }
+
+        public static void AddCurrentToHeap(StreamReader reader, Heap heap)
+        {
+            if (Helper.ReadInt(reader, out int currentNo))
+                heap.Add(new ReaderAndNum(currentNo, reader));
         }
     }
 
