@@ -9,40 +9,19 @@ namespace ExternalSorting
     class MergeFilesUsingArray
     {
         /// <summary>
-        /// Reader and current min in it.
-        /// </summary>
-        class ReaderAndNum
-        {
-            public int num;
-            public StreamReader reader;
-
-            public ReaderAndNum(int _num, StreamReader _reader)
-            {
-                num = _num;
-                reader = _reader;
-            }
-        }
-
-        /// <summary>
         /// Most basic way to merge sorted files. Pick min from each file and take min from them.
         /// Output the min to output file and pick the next min from the stream that current min got picked.
         /// Complexity for n files of k size each: 0(n * n * k)
         /// </summary>
-        /// <param name="inputFilesPath"></param>
-        /// <param name="outputFilePath"></param>
-        public static void Merge(string inputFilesPath, string outputFilePath)
+        /// <param name="readers"></param>
+        /// <param name="writer"></param>
+        public static void Merge(ref List<StreamReader> readers, ref StreamWriter writer)
         {
-            List<StreamReader> readers = new List<StreamReader>();
-
-            foreach (var file in Directory.GetFiles(inputFilesPath))
-            {
-                readers.Add(new StreamReader(file));
-            }
-
             List<ReaderAndNum> currentMins = new List<ReaderAndNum>();
+
+            // Create list of initial mins from each stream.
             foreach (var reader in readers)
             {
-
                 int currentNo;
                 bool isFound = Helper.ReadInt(reader, out currentNo);
 
@@ -50,8 +29,7 @@ namespace ExternalSorting
                     currentMins.Add(new ReaderAndNum(currentNo, reader));
             }
 
-            StreamWriter writer = new StreamWriter(outputFilePath);
-
+            //write min of all mins to file and get next min from that stream
             while (true)
             {
                 ReaderAndNum min = currentMins.First();
@@ -71,9 +49,7 @@ namespace ExternalSorting
                     break;
             }
 
-            writer.Close();
-            foreach (var reader in readers)
-                reader.Close();
+            
         }
 
     }

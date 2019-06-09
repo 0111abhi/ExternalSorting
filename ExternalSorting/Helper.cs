@@ -49,4 +49,19 @@ namespace ExternalSorting
             return isNumFound;
         }
     }
+
+    /// <summary>
+    /// Reader and current min in it.
+    /// </summary>
+    class ReaderAndNum
+    {
+        public int num;
+        public StreamReader reader;
+
+        public ReaderAndNum(int _num, StreamReader _reader)
+        {
+            num = _num;
+            reader = _reader;
+        }
+    }
 }

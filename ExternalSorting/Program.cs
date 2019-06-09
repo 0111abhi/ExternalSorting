@@ -10,18 +10,36 @@ namespace ExternalSorting
     class Program
     {
 
-        static string inputBlobFilePath = @"C:\Users\abhisagg\Documents\rand.txt";
-        static string outputSplittedFiles = @"C:\Users\abhisagg\Documents\output";
-        static string sortedOutputBlobFilePath = @"C:\Users\abhisagg\Documents\merged.txt";
+        static string unsortedBlobFilePath = @"C:\Users\abhisagg\Documents\rand.txt";
+        static string splittedFiles = @"C:\Users\abhisagg\Documents\output";
+        static string sortedBlobFilePath = @"C:\Users\abhisagg\Documents\merged.txt";
 
         static int sizeOfRandBlobToBeGeneratedMb = 10;
         static int nodeRamSizeMb = 1;
 
         static void Main(string[] args)
         {
-            RandomNumberGenerator.GenerateRandomNos(inputBlobFilePath, sizeOfRandBlobToBeGeneratedMb);
-            SplitBlob(nodeRamSizeMb, outputSplittedFiles);
-            MergeFilesUsingArray.Merge(outputSplittedFiles, sortedOutputBlobFilePath);
+            RandomNumberGenerator.GenerateRandomNos(unsortedBlobFilePath, sizeOfRandBlobToBeGeneratedMb);
+            SplitBlob(nodeRamSizeMb, splittedFiles);
+            MergeFiles(splittedFiles, sortedBlobFilePath);
+        }
+
+        public static void MergeFiles(string inputFilesPath, string outputFilePath)
+        {
+            List<StreamReader> readers = new List<StreamReader>();
+
+            foreach (var file in Directory.GetFiles(inputFilesPath))
+            {
+                readers.Add(new StreamReader(file));
+            }
+
+            StreamWriter writer = new StreamWriter(outputFilePath);
+
+            MergeFilesUsingArray.Merge(ref readers, ref writer);
+
+            writer.Close();
+            foreach (var reader in readers)
+                reader.Close();
         }
 
         /// <summary>
@@ -34,7 +52,7 @@ namespace ExternalSorting
         {
             int nosCount = Helper.CountNosFitInSizeMb(nodeSizeMb);
 
-            using (StreamReader reader = new StreamReader(inputBlobFilePath))
+            using (StreamReader reader = new StreamReader(unsortedBlobFilePath))
             {
                 int outputFilesCount = 0;
                 List<int> allNumsForNode = new List<int>();
